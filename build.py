@@ -4,7 +4,7 @@ import os
 
 name = 'a.out'
 libs = ['SDL2main', 'SDL2', 'SDL2_image', 'SDL2_ttf']
-paths = '-I nara/sauce -I demo'
+paths = '-I nara/sauce'
 files = [
 	'nara/sauce/nara_font',
 	'nara/sauce/nara_global',
