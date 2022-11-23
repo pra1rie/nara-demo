@@ -4,13 +4,13 @@ import os
 
 name = 'a.out'
 libs = ['SDL2main', 'SDL2', 'SDL2_image', 'SDL2_ttf']
-paths = '-I nara/sauce'
+paths = '-I nara'
 files = [
-	'nara/sauce/nara_font',
-	'nara/sauce/nara_global',
-	'nara/sauce/nara_sprite',
-	'nara/sauce/nara_util',
-	'nara/sauce/nara_window',
+	'nara/nara_font',
+	'nara/nara_global',
+	'nara/nara_sprite',
+	'nara/nara_util',
+	'nara/nara_window',
 	'sauce/game',
 	'sauce/main',
 ]
