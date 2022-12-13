@@ -30,7 +30,7 @@ update()
 int
 main(void)
 {
-	init();
+	initNara();
 	global.window = windowNew("Odio Salim.", 900, 540, true);
 	start_game();
 
@@ -42,6 +42,6 @@ main(void)
 	}
 
 	windowFree(&global.window);
-	quit();
+	exitNara();
 	return 0;
 }
