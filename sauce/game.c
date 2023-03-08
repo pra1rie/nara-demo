@@ -3,8 +3,11 @@
 
 #include <SDL2/SDL.h>
 
+// whatever the fuck
 #define wn global.window
-#define rn global.window.render
+#define rn global.window->render
+
+#define TILESIZE 32
 #define ZOOM 3
 
 static struct {
@@ -23,6 +26,7 @@ static struct {
 
 static struct {
 	Font font;
+	char dope_text[100];
 } gui;
 
 static void
@@ -35,21 +39,27 @@ init_gui()
 static void
 update_gui()
 {
-	fontWrite(&gui.font, "Sample Text", 24, 24);
+	sprintf(gui.dope_text, " {%d, %d} ",
+			player.rect.x, player.rect.y);
+	SDL_SetRenderDrawColor(rn, 24, 24, 36, 255);
+	fontWrite(&gui.font, gui.dope_text, 0, 0);
 }
 
 static void
 init_player()
 {
-	player.sprite = spriteNew("data/player.png");
-	player.speed = 6;
-	player.rect = (SDL_Rect) {120, 120, global.tileWidth, global.tileHeight};
-	player.rect_copy = player.rect;
-
+	player.sprite = spriteNew("data/player.png", TILESIZE, TILESIZE);
 	player.range[PLAYER_IDLE] = (SpriteRange) {0, 1, 36, 0};
 	player.range[PLAYER_WALK] = (SpriteRange) {2, 6, 6, 0};
-
 	player.state = PLAYER_IDLE;
+
+	// bruh.
+	int pos_x = (wn->width  / 2 / ZOOM - (TILESIZE / 2));
+	int pos_y = (wn->height / 2 / ZOOM - (TILESIZE / 2));
+
+	player.rect = (SDL_Rect) {pos_x, pos_y, TILESIZE, TILESIZE};
+	player.rect_copy = player.rect;
+	player.speed = 2;
 }
 
 static void
@@ -81,8 +91,8 @@ update_player()
 	spriteAnimate(&player.sprite, &player.range[player.state]);
 
 	SDL_Rect rect = (SDL_Rect) {
-		player.rect.x, // * ZOOM,
-		player.rect.y, // * ZOOM,
+		player.rect.x * ZOOM,
+		player.rect.y * ZOOM,
 		player.rect.w * ZOOM,
 		player.rect.h * ZOOM,
 	};
