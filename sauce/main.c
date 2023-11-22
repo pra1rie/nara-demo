@@ -7,14 +7,13 @@ update()
 {
 	SDL_Delay(12);
 	update_game();
-	SDL_RenderPresent(global.window->render);
+	SDL_RenderPresent(global.render);
 }
 
 int
 main(void)
 {
-	initNara();
-	global.window = windowNew("Odio Salim.", 900, 540, true);
+	initNara("Odio Salim.", 900, 540, true);
 	start_game();
 
 	SDL_Event e;
@@ -26,7 +25,6 @@ main(void)
 		update();
 	}
 
-	windowFree(global.window);
 	exitNara();
 	return 0;
 }

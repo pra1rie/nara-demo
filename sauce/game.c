@@ -3,10 +3,6 @@
 
 #include <SDL2/SDL.h>
 
-// whatever the fuck
-#define wn global.window
-#define rn global.window->render
-
 #define TILESIZE 32
 #define ZOOM 3
 
@@ -41,7 +37,7 @@ update_gui()
 {
 	sprintf(gui.dope_text, " {%d, %d} ",
 			player.rect.x, player.rect.y);
-	SDL_SetRenderDrawColor(rn, 24, 24, 36, 255);
+	SDL_SetRenderDrawColor(global.render, 24, 24, 36, 255);
 	fontWrite(&gui.font, gui.dope_text, 0, 0);
 }
 
@@ -54,8 +50,8 @@ init_player()
 	player.state = PLAYER_IDLE;
 
 	// bruh.
-	int pos_x = (wn->width  / 2 / ZOOM - (TILESIZE / 2));
-	int pos_y = (wn->height / 2 / ZOOM - (TILESIZE / 2));
+	int pos_x = (global.width  / 2 / ZOOM - (TILESIZE / 2));
+	int pos_y = (global.height / 2 / ZOOM - (TILESIZE / 2));
 
 	player.rect = (SDL_Rect) {pos_x, pos_y, TILESIZE, TILESIZE};
 	player.rect_copy = player.rect;
@@ -103,8 +99,8 @@ update_player()
 void
 update_game()
 {
-	SDL_SetRenderDrawColor(rn, 90, 60, 78, 0);
-	SDL_RenderClear(rn);
+	SDL_SetRenderDrawColor(global.render, 90, 60, 78, 0);
+	SDL_RenderClear(global.render);
 	update_player();
 	update_gui();
 }

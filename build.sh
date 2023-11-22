@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-# set -xe
+set -e
 
 NAME='a.out'
 LIBS='-lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf'
