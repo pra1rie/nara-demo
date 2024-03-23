@@ -1,11 +1,6 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
-set -e
+NARA="../nara/"
+LIBS="-lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf"
 
-NAME='a.out'
-LIBS='-lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf'
-
-gcc sauce/*.c nara/*.c -I nara $LIBS -o $NAME
-
-[ -f $NAME ] && ./$NAME
-
+gcc sauce/*.c $NARA/*.c -I$NARA $LIBS

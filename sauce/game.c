@@ -3,9 +3,6 @@
 
 #include <SDL2/SDL.h>
 
-#define TILESIZE 32
-#define ZOOM 3
-
 static struct {
 	Sprite sprite;
 	SDL_Rect rect;
@@ -20,38 +17,29 @@ static struct {
 	SpriteRange range[NUM_PLAYER_STATES];
 } player;
 
-static struct {
-	Font font;
-	char dope_text[100];
-} gui;
-
-static void
-init_gui()
-{
-	SDL_Color color = {240, 240, 240, 255};
-	gui.font = fontNew("data/hack.ttf", 24, color);
-}
-
 static void
 update_gui()
 {
-	sprintf(gui.dope_text, " {%d, %d} ",
-			player.rect.x, player.rect.y);
-	SDL_SetRenderDrawColor(global.render, 24, 24, 36, 255);
-	fontWrite(&gui.font, gui.dope_text, 0, 0);
+	sprintf(game.gui_text, " {%d, %d} ", player.rect.x, player.rect.y);
+
+	SDL_Rect rect = { 0, 0, 200, game.gui_font.size + 6 };
+
+	SDL_SetRenderDrawColor(game.window.render, 24, 24, 36, 255);
+	SDL_RenderFillRect(game.window.render, &rect);
+	fontWrite(&game.gui_font, game.window.render, game.gui_text, 0, 0);
 }
 
 static void
 init_player()
 {
-	player.sprite = spriteNew("data/player.png", TILESIZE, TILESIZE);
-	player.range[PLAYER_IDLE] = (SpriteRange) {0, 1, 36, 0};
-	player.range[PLAYER_WALK] = (SpriteRange) {2, 6, 6, 0};
+	player.sprite = spriteNew("./data/player.png", TILESIZE, TILESIZE);
+	player.range[PLAYER_IDLE] = (SpriteRange) { 0, 1, 36, 0 };
+	player.range[PLAYER_WALK] = (SpriteRange) { 2, 6, 6, 0 };
 	player.state = PLAYER_IDLE;
 
 	// bruh.
-	int pos_x = (global.width  / 2 / ZOOM - (TILESIZE / 2));
-	int pos_y = (global.height / 2 / ZOOM - (TILESIZE / 2));
+	int pos_x = (game.window.width  / ZOOM / 2 - (TILESIZE / 2));
+	int pos_y = (game.window.height / ZOOM / 2 - (TILESIZE / 2));
 
 	player.rect = (SDL_Rect) {pos_x, pos_y, TILESIZE, TILESIZE};
 	player.rect_copy = player.rect;
@@ -64,18 +52,20 @@ update_player()
 	player.rect_copy = player.rect;
 	player.state = PLAYER_IDLE;
 
-	if (getKey(SDL_SCANCODE_LEFT)) {
+	const char *state = SDL_GetKeyboardState(NULL);
+
+	if (state[SDL_SCANCODE_LEFT]) {
 		player.rect.x -= player.speed;
 		player.sprite.flip = SDL_FLIP_HORIZONTAL;
 	}
-	if (getKey(SDL_SCANCODE_RIGHT)) {
+	if (state[SDL_SCANCODE_RIGHT]) {
 		player.rect.x += player.speed;
 		player.sprite.flip = SDL_FLIP_NONE;
 	}
-	if (getKey(SDL_SCANCODE_UP)) {
+	if (state[SDL_SCANCODE_UP]) {
 		player.rect.y -= player.speed;
 	}
-	if (getKey(SDL_SCANCODE_DOWN)) {
+	if (state[SDL_SCANCODE_DOWN]) {
 		player.rect.y += player.speed;
 	}
 
@@ -85,30 +75,34 @@ update_player()
 	}
 
 	spriteAnimate(&player.sprite, &player.range[player.state]);
-
-	SDL_Rect rect = (SDL_Rect) {
-		player.rect.x * ZOOM,
-		player.rect.y * ZOOM,
-		player.rect.w * ZOOM,
-		player.rect.h * ZOOM,
-	};
-	
-	spriteRender(&player.sprite, &rect);
+	spriteRender(&player.sprite, game.window.render, &player.rect);
 }
 
 void
 update_game()
 {
-	SDL_SetRenderDrawColor(global.render, 90, 60, 78, 0);
-	SDL_RenderClear(global.render);
+	SDL_SetRenderTarget(game.window.render, game.texture);
+
+	SDL_SetRenderDrawColor(game.window.render, 90, 60, 78, 255);
+	SDL_RenderClear(game.window.render);
 	update_player();
+
+	SDL_SetRenderTarget(game.window.render, NULL);
+	SDL_RenderCopy(game.window.render, game.texture, NULL, NULL);
 	update_gui();
 }
 
 void
 start_game()
 {
+	game.running = true;
+	SDL_Color col = {240, 240, 240, 255};
+	game.gui_font = fontNew("./data/hack.ttf", 24, col);
+
+	game.texture = SDL_CreateTexture(game.window.render,
+			SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET,
+			game.window.width / ZOOM, game.window.height / ZOOM);
+
 	init_player();
-	init_gui();
 }
 

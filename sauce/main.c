@@ -7,24 +7,35 @@ update()
 {
 	SDL_Delay(12);
 	update_game();
-	SDL_RenderPresent(global.render);
+	SDL_RenderPresent(game.window.render);
 }
 
 int
 main(void)
 {
-	initNara("Odio Salim.", 900, 540, true);
+	initNara();
+
+	game.window = windowNew("Odio Salim.", 900, 540, true);
 	start_game();
 
 	SDL_Event e;
-	while (global.isRunning) {
-		// tired of checking the same events lul
+	while (game.running) {
 		if (SDL_PollEvent(&e)) {
-			genericEvents(e);
+			game.running = windowEvents(&game.window, e);
+			// fucking hell
+			if (e.type == SDL_WINDOWEVENT
+					&& e.window.event == SDL_WINDOWEVENT_RESIZED) {
+				SDL_DestroyTexture(game.texture);
+				game.texture = SDL_CreateTexture(game.window.render,
+					SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET,
+					game.window.width / ZOOM, game.window.height / ZOOM);
+			}
 		}
 		update();
 	}
 
+	SDL_DestroyTexture(game.texture);
+	windowFree(&game.window);
 	exitNara();
 	return 0;
 }
