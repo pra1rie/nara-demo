@@ -3,6 +3,8 @@
 
 #include <SDL2/SDL.h>
 
+struct demo_game game = {0};
+
 static struct {
 	Sprite sprite;
 	SDL_Rect rect;
@@ -32,7 +34,8 @@ update_gui()
 static void
 init_player()
 {
-	player.sprite = spriteNew("./data/player.png", TILESIZE, TILESIZE);
+	player.sprite = spriteNew(game.window.render, "./data/player.png", TILESIZE, TILESIZE);
+	player.sprite.tileWidth = player.sprite.tileHeight = TILESIZE;
 	player.range[PLAYER_IDLE] = (SpriteRange) { 0, 1, 36, 0 };
 	player.range[PLAYER_WALK] = (SpriteRange) { 2, 6, 6, 0 };
 	player.state = PLAYER_IDLE;

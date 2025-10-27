@@ -5,13 +5,15 @@
 #define TILESIZE 32
 #define ZOOM 4
 
-struct {
+struct demo_game {
 	Window window;
 	SDL_Texture *texture;
 	Font gui_font;
 	char gui_text[255];
 	bool running;
-} game;
+};
+
+extern struct demo_game game;
 
 void start_game();
 void update_game();

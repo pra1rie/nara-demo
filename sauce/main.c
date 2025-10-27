@@ -22,6 +22,8 @@ main(void)
 	while (game.running) {
 		if (SDL_PollEvent(&e)) {
 			game.running = windowEvents(&game.window, e);
+			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+				game.running = false;
 			// fucking hell
 			if (e.type == SDL_WINDOWEVENT
 					&& e.window.event == SDL_WINDOWEVENT_RESIZED) {
